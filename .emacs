@@ -1,16 +1,38 @@
-;; Adding packages
+;; Check version
 (when (>= emacs-major-version 24)
   (require 'package)
   (add-to-list
    'package-archives
    '("melpa" . "http://melpa.org/packages/")
    t)
+  (add-hook 'after-init-hook 'global-company-mode)
   (add-to-list 'custom-theme-load-path "/Users/eric/elixircode/themes")
   (package-initialize))
+
+;; Evil Leader TODO don't work
+(setq evil-leader/in-all-states 1)
+(global-evil-leader-mode)
+(evil-leader/set-leader "<SPC>")
+(evil-leader/set-key
+  "f" 'find-file
+  "b" (kbd "C-x <left>")
+  "n" (kbd "C-x <right>")
+  "s" (kbd "C-x C-s")
+  "w" (kbd "C-x 0")
+  "d" 'alchemist-help-search-at-point
+  "g" 'git-gutter:update-all-windows
+  "<SPC>" 'delete-other-windows
+  "k" 'kill-buffer)
 
 ;; Evil mode on
 (require 'evil)
 (evil-mode 1)
+
+;; menu-bar-mode -1
+(menu-bar-mode -1)
+
+;; auto complete -1 since we have company
+(auto-complete-mode -1)
 
 ;; smooth scrolling
 (setq scroll-margin 5
@@ -28,16 +50,46 @@
 ;; Linum
 (global-linum-mode t)
 
+;;alchemist
+(alchemist-mode t)
+
 ;; linum padding on the left
 (setq linum-format "%d ")
 
+;; Alchemist configuration:
+(setq alchemist-mix-command "/usr/local/bin/mix")
+(setq alchemist-mix-test-task "espec")
+(setq alchemist-mix-test-default-options '()) ;; default
+;; (setq alchemist-mix-env "prod") ;; Set it through a specific environment
+;; iEX Setup
+(setq alchemist-iex-program-name "/usr/local/bin/iex") ;; default: iex
+(setq alchemist-execute-command "/usr/local/bin/elixir") ;; default: elixir
+(setq alchemist-compile-command "/usr/local/bin/elixirc") ;; default: elixirc
+(setq alchemist-test-status-modeline nil)
+(setq alchemist-key-command-prefix (kbd "C-c ,")) ;; default: (kbd "C-c a")
+(setq alchemist-test-mode-highlight-tests nil) ;; default t
+(setq alchemist-test-ask-about-save nil)
+(setq alchemist-test-status-modeline nil)
+(setq alchemist-test-display-compilation-output t)
+(setq alchemist-hooks-test-on-save t)
+(setq alchemist-hooks-compile-on-save t)
+;; 加的
+(setq alchemist-help-minor-mode t)
+(setq alchemist-goto-elixir-source-dir "/usr/local/bin/")
 
 ;; Git gutter mode
 (global-git-gutter-mode +1)
 
+;; alchemist just to source
+;; (setq alchemist-goto-elixir-source-dir "/usr/local/bin/elixir")
+
 ;; key-bindings
-(global-set-key (kbd "C-c") 'evil-normal-state)
-(global-set-key (kbd "C-k") 'other-window)
+(global-set-key (kbd "C-c C-z") 'evil-normal-state)
+(global-set-key (kbd "C-j") 'other-window)
+(global-set-key (kbd "C-x b") (kbd "C-x <left>"))
+(global-set-key (kbd "C-x n") (kbd "C-x <right>"))
+(global-set-key (kbd "C-l") 'company-complete)
+;; (global-set-key (kbd "C-h C-f") 'find-function-at-point)
 
 ;; show parenthesis mode on
 (show-paren-mode t)
@@ -53,11 +105,6 @@
 ;; GDB many windows
 (setq gdb-many-windows t)
 
-;; This way when convert back to normal mode it won't get back
-(setq evil-move-cursor-back nil)
-
-;; menu-bar-mode -1
-(menu-bar-mode -1)
 
 ;; Powerline Evil
 (require 'powerline)
@@ -68,10 +115,6 @@
 ;; Color theme approximate helps with the color contrast
 ;; (color-theme-approximate-on)
 
-;; Evil Leader TODO don't work
-(setq evil-leader/in-all-states 1)
-(global-evil-leader-mode)
-(evil-leader/set-leader ",")
 
 ;; save bookmarks
 (setq bookmark-default-file "~/.emacs.d/bookmarks"
