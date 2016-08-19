@@ -5,7 +5,7 @@
    'package-archives
    '("melpa" . "http://melpa.org/packages/")
    t)
-  (add-hook 'after-init-hook 'global-company-mode)
+;;  (add-hook 'after-init-hook 'global-company-mode)
   (add-to-list 'custom-theme-load-path "/Users/eric/elixircode/themes")
   (package-initialize))
 
@@ -30,9 +30,16 @@
 
 ;; menu-bar-mode -1
 (menu-bar-mode -1)
+;; tool-bar-mode
+(tool-bar-mode -1)
+;; cursor type to hbar
+(set-default 'cursor-type 'hbar)
 
 ;; auto complete -1 since we have company
-(auto-complete-mode -1)
+(auto-complete-mode)
+
+;; company mode
+(global-company-mode)
 
 ;; smooth scrolling
 (setq scroll-margin 5
@@ -49,9 +56,16 @@
 
 ;; Linum
 (global-linum-mode t)
+;; TODO 加的
+(nlinum-mode)
+
+(autopair-global-mode)
 
 ;;alchemist
 (alchemist-mode t)
+
+;; TODO 加的这个
+(ac-config-default)
 
 ;; linum padding on the left
 (setq linum-format "%d ")
@@ -83,12 +97,28 @@
 ;; alchemist just to source
 ;; (setq alchemist-goto-elixir-source-dir "/usr/local/bin/elixir")
 
-;; key-bindings
-(global-set-key (kbd "C-c C-z") 'evil-normal-state)
+;; TODO 加了from enberg on #emacs 好像没用？
+(setq compilation-finish-function
+  (lambda (buf str)
+    (if (null (string-match ".*exited abnormally.*" str))
+        ;;no errors, make the compilation window go away in a few seconds
+        (progn
+          (run-at-time
+           "2 sec" nil 'delete-windows-on
+           (get-buffer-create "*compilation*"))
+          (message "No Compilation Errors!")))))
+
+;; key-bindings setkey setup
+(global-set-key (kbd "C-c C-n") 'evil-normal-state)
 (global-set-key (kbd "C-j") 'other-window)
 (global-set-key (kbd "C-x b") (kbd "C-x <left>"))
 (global-set-key (kbd "C-x n") (kbd "C-x <right>"))
+(global-set-key (kbd "C-x |") 'toggle-window-split)
 (global-set-key (kbd "C-l") 'company-complete)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "C-M-z") 'switch-window)
+(global-set-key (kbd "C->") 'ace-jump-mode)
+;; (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 ;; (global-set-key (kbd "C-h C-f") 'find-function-at-point)
 
 ;; show parenthesis mode on
@@ -109,7 +139,8 @@
 ;; Powerline Evil
 (require 'powerline)
 (powerline-evil-vim-color-theme)
-(display-time-mode t)
+(setq powerline-default-separator 'wave)
+;;(display-time-mode t)
 
 
 ;; Color theme approximate helps with the color contrast
